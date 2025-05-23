@@ -4,6 +4,9 @@
 #include "Vecteur.h"
 #include <stdexcept>
 
+
+
+
 class ObjetMobile {
 private:
     Vecteur parametres;         // Vecteur E (degrés de liberté)

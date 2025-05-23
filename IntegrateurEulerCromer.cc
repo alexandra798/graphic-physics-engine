@@ -1,5 +1,7 @@
 // IntegrateurEulerCromer.cc
 #include "IntegrateurEulerCromer.h"
+#include "ObjetMobile.h"
+#include "Vecteur.h"
 
 void IntegrateurEulerCromer::integre(ObjetMobile& objet, double t, double dt) const {
     // 1. Récupérer les paramètres actuels (position, etc.)

@@ -1,22 +1,18 @@
 #include "TextViewer.h"
 #include "PointMateriel.h"
-#include "Systeme.h"
 #include "ChargeElectrique.h"
+#include "Systeme.h"
 
-
-// 绘制PointMateriel对象
-void TextViewer::dessine(const PointMateriel& point) {
-    sortie << point;
+void TextViewer::dessine(const PointMateriel& pm) {
+    flot << "Point Matériel :" << std::endl;
+    flot << pm << std::endl;
 }
 
-// 绘制Systeme对象
-void TextViewer::dessine(const Systeme& systeme) {
-    sortie << systeme;
+void TextViewer::dessine(const ChargeElectrique& ce) {
+    flot << "Charge Électrique :" << std::endl;
+    flot << ce << std::endl;
 }
 
-
-
-// 绘制ChargeElectrique对象
-void TextViewer::dessine(const ChargeElectrique& charge) {
-    sortie << "Charge Electrique: " << charge << std::endl;
+void TextViewer::dessine(const Systeme& sys) {
+    flot << sys;
 }

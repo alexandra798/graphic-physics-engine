@@ -1,47 +1,77 @@
-CC  = $(CXX)
+CC = $(CXX)
+CXXFLAGS = -std=c++17
+CXXFLAGS += -pedantic -Wall -Wextra -Werror
+CXXFLAGS += -g
 
-CXXFLAGS = -std=c++11  
-
-# Partie commentée : choisissez les options que vous voulez avoir
-#                    en décommentant la/les lignes correspondantes
-#
-CXXFLAGS += -pedantic -Wall -Wextra -Werror  # 更严格的警告和错误检查
-CXXFLAGS += -g                    # pour debugger
-# CXXFLAGS += -O2                   # pour optimiser la vitesse
-
+.PHONY: all clean
 
 all: testVecteur testIntegrateur1 testPointMateriel
 
-Vecteur.o: Vecteur.cc Vecteur.h
+GravitationConstante.o: ChampForces.h GravitationConstante.cc GravitationConstante.h ObjetPhysique.h Vecteur.h constantes.h
+	$(CXX) $(CXXFLAGS) -c GravitationConstante.cc
 
-GravitationConstante.o: GravitationConstante.cc GravitationConstante.h ChampForces.h Vecteur.h constantes.h
+Libre.o: Contrainte.h Libre.cc Libre.h ObjetPhysique.h Vecteur.h
+	$(CXX) $(CXXFLAGS) -c Libre.cc
+
+testVecteur.o: Vecteur.h testVecteur.cc
+	$(CXX) $(CXXFLAGS) -c testVecteur.cc
+
+ChargeElectrique.o: ChampForces.h ChargeElectrique.cc ChargeElectrique.h Contrainte.h Dessinable.h ObjetPhysique.h SupportADessin.h Vecteur.h
+	$(CXX) $(CXXFLAGS) -c ChargeElectrique.cc
+
+IntegrateurEulerCromer.o: Integrateur.h IntegrateurEulerCromer.cc IntegrateurEulerCromer.h ObjetMobile.h Vecteur.h
+	$(CXX) $(CXXFLAGS) -c IntegrateurEulerCromer.cc
+
+exercice9.o: GravitationConstante.h IntegrateurEulerCromer.h Libre.h PointMateriel.h Systeme.h TextViewer.h exercice9.cc
+	$(CXX) $(CXXFLAGS) -c exercice9.cc
+
+Systeme.o: ChampForces.h ChampNewtonien.h ChargeElectrique.h Contrainte.h Dessinable.h GravitationConstante.h Integrateur.h IntegrateurEulerCromer.h Libre.h ObjetPhysique.h PointMateriel.h SupportADessin.h Systeme.cc Systeme.h
+	$(CXX) $(CXXFLAGS) -c Systeme.cc
+
+IntegrateurRungeKutta4.o: Integrateur.h IntegrateurRungeKutta4.cc IntegrateurRungeKutta4.h ObjetMobile.h
+	$(CXX) $(CXXFLAGS) -c IntegrateurRungeKutta4.cc
+
+ForceCentrale.o: ChampForces.h ForceCentrale.cc ForceCentrale.h ObjetPhysique.h Vecteur.h
+	$(CXX) $(CXXFLAGS) -c ForceCentrale.cc
 
 ObjetMobile.o: ObjetMobile.cc ObjetMobile.h Vecteur.h
+	$(CXX) $(CXXFLAGS) -c ObjetMobile.cc
 
-PointMateriel.o: PointMateriel.cc PointMateriel.h ObjetPhysique.h Vecteur.h GravitationConstante.h
+ChampNewtonien.o: ChampNewtonien.cc ChampNewtonien.h ForceCentrale.h ObjetPhysique.h Vecteur.h
+	$(CXX) $(CXXFLAGS) -c ChampNewtonien.cc
 
-ObjetPhysique.o: ObjetPhysique.h ObjetMobile.h ChampForces.h Contrainte.h
+ObjetPhysique.o: ChampForces.h Contrainte.h ObjetMobile.h ObjetPhysique.cc ObjetPhysique.h
+	$(CXX) $(CXXFLAGS) -c ObjetPhysique.cc
 
+testPointMateriel.o: GravitationConstante.h Libre.h PointMateriel.h Vecteur.h testPointMateriel.cc
+	$(CXX) $(CXXFLAGS) -c testPointMateriel.cc
 
+testIntegrateur1.o: GravitationConstante.h IntegrateurEulerCromer.h Libre.h PointMateriel.h testIntegrateur1.cc
+	$(CXX) $(CXXFLAGS) -c testIntegrateur1.cc
 
-IntegrateurRungeKutta4.o: IntegrateurRungeKutta4.cc IntegrateurRungeKutta4.h Integrateur.h ObjetMobile.h
-IntegrateurEulerCromer.o: IntegrateurEulerCromer.cc IntegrateurEulerCromer.h Integrateur.h ObjetMobile.h
+PointMateriel.o: ChampForces.h Contrainte.h Dessinable.h ObjetPhysique.h PointMateriel.cc PointMateriel.h SupportADessin.h Vecteur.h
+	$(CXX) $(CXXFLAGS) -c PointMateriel.cc
 
-TextViewer.o: TextViewer.cc TextViewer.h SupportADessin.h
-Systeme.o: Systeme.cc Systeme.h Dessinable.h ObjetPhysique.h ChampForces.h Contrainte.h Integrateur.h
-Libre.o: Libre.cc Libre.h Contrainte.h Vecteur.h
+TextViewer.o: ChargeElectrique.h PointMateriel.h SupportADessin.h Systeme.h TextViewer.cc TextViewer.h
+	$(CXX) $(CXXFLAGS) -c TextViewer.cc
 
+testPomme.o: ChampNewtonien.h IntegrateurEulerCromer.h Libre.h PointMateriel.h Systeme.h testPomme.cc
+	$(CXX) $(CXXFLAGS) -c testPomme.cc
 
+Vecteur.o: Vecteur.cc Vecteur.h
+	$(CXX) $(CXXFLAGS) -c Vecteur.cc
 
-testVecteur.o: testVecteur.cc Vecteur.h
-testIntegrateur1.o: testIntegrateur1.cc PointMateriel.h IntegrateurEulerCromer.h
-testPointMateriel.o: testPointMateriel.cc PointMateriel.h Vecteur.h ObjetMobile.h ObjetPhysique.h ChampForces.h GravitationConstante.h Contrainte.h Libre.h Integrateur.h IntegrateurEulerCromer.h Dessinable.h SupportADessin.h TextViewer.h
-
-
-
+testSysteme.o: ChampNewtonien.h IntegrateurEulerCromer.h Libre.h PointMateriel.h Systeme.h testSysteme.cc
+	$(CXX) $(CXXFLAGS) -c testSysteme.cc
 
 testVecteur: testVecteur.o Vecteur.o
-testIntegrateur1: testIntegrateur1.o PointMateriel.o Vecteur.o ObjetMobile.o ObjetPhysique.o GravitationConstante.o   IntegrateurEulerCromer.o
-	g++ -o testIntegrateur1 testIntegrateur1.o PointMateriel.o Vecteur.o ObjetMobile.o ObjetPhysique.o  GravitationConstante.o   IntegrateurEulerCromer.o
+	$(CXX) -o testVecteur testVecteur.o Vecteur.o
 
-testPointMateriel: testPointMateriel.o PointMateriel.o Libre.o Vecteur.o ObjetMobile.o ObjetPhysique.o GravitationConstante.o IntegrateurEulerCromer.o TextViewer.o Systeme.o
+testIntegrateur1: testIntegrateur1.o PointMateriel.o Vecteur.o ObjetMobile.o ObjetPhysique.o GravitationConstante.o IntegrateurEulerCromer.o Libre.o
+	$(CXX) -o testIntegrateur1 testIntegrateur1.o PointMateriel.o Vecteur.o ObjetMobile.o ObjetPhysique.o GravitationConstante.o IntegrateurEulerCromer.o Libre.o
+
+testPointMateriel: testPointMateriel.o PointMateriel.o Libre.o Vecteur.o ObjetMobile.o ObjetPhysique.o GravitationConstante.o IntegrateurEulerCromer.o TextViewer.o Systeme.o ChargeElectrique.o ChampNewtonien.o ForceCentrale.o
+	$(CXX) -o testPointMateriel testPointMateriel.o PointMateriel.o Libre.o Vecteur.o ObjetMobile.o ObjetPhysique.o GravitationConstante.o IntegrateurEulerCromer.o TextViewer.o Systeme.o ChargeElectrique.o ChampNewtonien.o ForceCentrale.o
+
+clean:
+	rm -f *.o testVecteur testIntegrateur1 testPointMateriel

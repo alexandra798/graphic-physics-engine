@@ -1,23 +1,26 @@
 #pragma once
 #include "SupportADessin.h"
 #include <iostream>
+#include "PointMateriel.h"
+#include "ChargeElectrique.h"
+#include "Systeme.h"
 
-//只有dessine这一个方法
-
+/**
+ * @class TextViewer
+ * @brief 文本模式的显示器
+ * 
+ * 继承自SupportADessin，实现文本模式的显示功能
+ */
 class TextViewer : public SupportADessin {
 private:
-    std::ostream& sortie;  // 引用到输出流
-    
-public:
+    std::ostream& flot;  // 输出流的引用
 
-    // 构造函数
-    TextViewer(std::ostream& out = std::cout) : sortie(out) {}
+public:
+    // 构造函数，接受一个输出流的引用
+    explicit TextViewer(std::ostream& os = std::cout) : flot(os) {}
     
-    // 析构函数
-    virtual ~TextViewer() = default;
-    
-    // 实现绘制方法
-    virtual void dessine(const PointMateriel& point) override;
-    virtual void dessine(const Systeme& systeme) override;
-    virtual void dessine(const ChargeElectrique& charge) override;
+    // 实现各种对象的绘制方法
+    void dessine(const PointMateriel& pm) override;
+    void dessine(const ChargeElectrique& ce) override;
+    void dessine(const Systeme& sys) override;
 };

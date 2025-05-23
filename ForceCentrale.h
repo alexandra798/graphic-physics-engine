@@ -1,6 +1,9 @@
 #pragma once
 #include "ChampForces.h"
 #include <memory>
+#include "Vecteur.h"
+class ObjetPhysique;
+
 
 class ForceCentrale : public ChampForces {
 protected:

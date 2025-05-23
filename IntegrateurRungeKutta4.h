@@ -1,6 +1,7 @@
 // IntegrateurRungeKutta4.h
 #pragma once
 #include "Integrateur.h"
+#include "ObjetMobile.h"
 
 class IntegrateurRungeKutta4 : public Integrateur {
 public:

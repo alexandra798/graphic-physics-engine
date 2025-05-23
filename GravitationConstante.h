@@ -1,6 +1,7 @@
 #pragma once
 #include "ChampForces.h"
 #include "Vecteur.h"
+#include "ObjetPhysique.h"
 
 // Déclaration anticipée pour éviter les inclusions circulaires
 class PointMateriel;

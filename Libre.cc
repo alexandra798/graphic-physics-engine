@@ -1,5 +1,6 @@
 #include "Libre.h"
 #include "ObjetPhysique.h" 
+#include "Vecteur.h"
 
 Vecteur Libre::applique_force(const ObjetPhysique& objet, const Vecteur& force, double /*temps*/) const {
     double masse = objet.getMasse();

@@ -1,8 +1,13 @@
 #pragma once
 #include "ObjetPhysique.h"
+#include "Dessinable.h"
+#include "SupportADessin.h"
 #include <memory>
+#include "Vecteur.h"
+#include "ChampForces.h"
+#include "Contrainte.h"
 
-class PointMateriel : public ObjetPhysique {
+class PointMateriel : public ObjetPhysique, public Dessinable {
 public:
     // Constructors
     PointMateriel();
@@ -13,9 +18,9 @@ public:
     // Destructor
     virtual ~PointMateriel() = default;
 
-
-    // void setMasse(double m);
-    // Vecteur evolution(double temps) const override;
+    // 实现Dessinable的绘制方法
+    virtual void dessine_sur(SupportADessin& support) override
+    { support.dessine(*this); }
 
     // 添加显示方法
     void affiche() const;
