@@ -1,12 +1,12 @@
 #pragma once
-#include "ObjetPhysique.h"
+#include "PointMateriel.h"
 #include "Dessinable.h"
 #include "SupportADessin.h"
 #include <memory>
 #include "ChampForces.h"
 #include "Contrainte.h"
 
-class ChargeElectrique : public ObjetPhysique, public Dessinable {
+class ChargeElectrique : public PointMateriel, public Dessinable {
 private:
     double charge;
 public:
