@@ -5,7 +5,7 @@ CXXFLAGS += -g
 
 .PHONY: all clean
 
-all: testVecteur testIntegrateur1 testPointMateriel
+all: testVecteur testIntegrateur1 testPointMateriel testPomme
 
 GravitationConstante.o: ChampForces.h GravitationConstante.cc GravitationConstante.h ObjetPhysique.h Vecteur.h constantes.h
 	$(CXX) $(CXXFLAGS) -c GravitationConstante.cc
@@ -55,7 +55,7 @@ PointMateriel.o: ChampForces.h Contrainte.h Dessinable.h ObjetPhysique.h PointMa
 TextViewer.o: ChargeElectrique.h PointMateriel.h SupportADessin.h Systeme.h TextViewer.cc TextViewer.h
 	$(CXX) $(CXXFLAGS) -c TextViewer.cc
 
-testPomme.o: ChampNewtonien.h IntegrateurEulerCromer.h Libre.h PointMateriel.h Systeme.h testPomme.cc
+testPomme.o: ChampNewtonien.h IntegrateurEulerCromer.h Libre.h PointMateriel.h testPomme.cc
 	$(CXX) $(CXXFLAGS) -c testPomme.cc
 
 Vecteur.o: Vecteur.cc Vecteur.h
@@ -73,5 +73,8 @@ testIntegrateur1: testIntegrateur1.o PointMateriel.o Vecteur.o ObjetMobile.o Obj
 testPointMateriel: testPointMateriel.o PointMateriel.o Libre.o Vecteur.o ObjetMobile.o ObjetPhysique.o GravitationConstante.o IntegrateurEulerCromer.o TextViewer.o Systeme.o ChargeElectrique.o ChampNewtonien.o ForceCentrale.o
 	$(CXX) -o testPointMateriel testPointMateriel.o PointMateriel.o Libre.o Vecteur.o ObjetMobile.o ObjetPhysique.o GravitationConstante.o IntegrateurEulerCromer.o TextViewer.o Systeme.o ChargeElectrique.o ChampNewtonien.o ForceCentrale.o
 
+testPomme: testPomme.o PointMateriel.o Libre.o Vecteur.o ObjetMobile.o ObjetPhysique.o ChampNewtonien.o IntegrateurEulerCromer.o ForceCentrale.o 
+	$(CXX) -o testPomme testPomme.o PointMateriel.o Libre.o Vecteur.o ObjetMobile.o ObjetPhysique.o ChampNewtonien.o IntegrateurEulerCromer.o ForceCentrale.o 
+
 clean:
-	rm -f *.o testVecteur testIntegrateur1 testPointMateriel
+	rm -f *.o testVecteur testIntegrateur1 testPointMateriel testPomme

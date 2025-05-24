@@ -3,6 +3,8 @@
 #include "Dessinable.h"
 #include "SupportADessin.h"
 #include <memory>
+#include "ChampForces.h"
+#include "Contrainte.h"
 
 class ChargeElectrique : public ObjetPhysique, public Dessinable {
 private:

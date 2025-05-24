@@ -1,5 +1,7 @@
 #pragma once
 #include "ForceCentrale.h"
+#include "ObjetPhysique.h"
+#include "Vecteur.h"
 
 class ChampNewtonien : public ForceCentrale {
 private:
@@ -11,4 +13,7 @@ public:
     
     // 计算牛顿引力
     Vecteur force(const ObjetPhysique& objet, double temps) const override;
-}; 
+    
+    // 获取中心物体（用于显示）
+    const ObjetPhysique& getCentre() const { return *centre; }
+};

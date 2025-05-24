@@ -1,94 +1,102 @@
 #include <iostream>
-#include <memory>
 #include <iomanip>
-#include "Systeme.h"
+#include <memory>
 #include "PointMateriel.h"
 #include "ChampNewtonien.h"
 #include "Libre.h"
 #include "IntegrateurEulerCromer.h"
 
 int main() {
-    try {
-        // 创建系统
-        Systeme systeme;
+    // 物理常数
+    const double RAYON_TERRE = 6.371e6;        // 地球半径（米）
+    const double MASSE_TERRE = 5.972e24;       // 地球质量（千克）
+    const double MASSE_POMME = 0.1;            // 苹果质量（千克）
+    const double ALTITUDE_INITIALE = 10.0;     // 初始高度（米）
+    const double DT = 1e-3;                    // 时间步长（秒）
+    
+    // 创建地球（作为中心天体，位于原点）
+    auto terre = std::make_shared<PointMateriel>(
+        Vecteur(0.0, 0.0, 0.0),                // 地球位置（原点）
+        Vecteur(0.0, 0.0, 0.0),                // 地球速度（静止）
+        MASSE_TERRE                             // 地球质量
+    );
+    
+    // 创建牛顿引力场（地球作为引力中心）
+    auto champ_gravite = std::make_shared<ChampNewtonien>(terre);
+    
+    // 创建自由约束
+    auto contrainte_libre = std::make_shared<Libre>();
+    
+    // 创建苹果（位于地球表面上方10米处）
+    auto pomme = std::make_shared<PointMateriel>(
+        Vecteur(0.0, RAYON_TERRE + ALTITUDE_INITIALE, 0.0),  // 初始位置
+        Vecteur(0.0, 0.0, 0.0),                               // 初始速度（静止）
+        MASSE_POMME,                                          // 苹果质量
+        champ_gravite,                                        // 引力场
+        contrainte_libre                                      // 约束
+    );
+    
+    // 创建Euler-Cromer积分器
+    IntegrateurEulerCromer integrateur;
+    
+    // 输出格式设置
+    std::cout << std::fixed << std::setprecision(4);
+    
+    // 模拟参数
+    double temps = 0.0;
+    
+    // 第一部分：输出前100步的高度
+    for (int i = 0; i <= 100; ++i) {
+        // 计算当前高度
+        Vecteur pos = pomme->position();
+        double altitude = pos.norme() - RAYON_TERRE;
         
-        // 创建地球（质心在原点）
-        double masse_terre = 5.972e24;  // 单位：kg
-        double rayon_terre = 6371e3;    // 单位：m
+        // 输出时间和高度
+        std::cout << temps << "  " << std::setprecision(6) << altitude << std::endl;
         
-        auto terre = std::make_shared<PointMateriel>(
-            Vecteur(0, 0, 0),           // 位置
-            Vecteur(0, 0, 0),           // 速度
-            masse_terre,                // 质量
-            nullptr,                    // 暂时没有力场
-            std::make_shared<Libre>()   // 自由约束
-        );
-        
-        // 创建苹果（在地球表面上方10米处）
-        double masse_pomme = 0.1;       // 单位：kg
-        double altitude = rayon_terre + 10.0;  // 距离地心的距离
-        
-        auto pomme = std::make_shared<PointMateriel>(
-            Vecteur(0, 0, altitude),    // 位置
-            Vecteur(0, 0, 0),           // 初始速度为0
-            masse_pomme,                // 质量
-            nullptr,                    // 暂时没有力场
-            std::make_shared<Libre>()   // 自由约束
-        );
-        
-        // 创建牛顿引力场
-        auto champ_newton = std::make_shared<ChampNewtonien>(terre);
-        
-        // 将对象添加到系统
-        systeme.ajoute_objet(terre);
-        systeme.ajoute_objet(pomme);
-        
-        // 添加力场
-        systeme.ajoute_champ(champ_newton);
-        
-        // 应用力场到苹果
-        systeme.applique_champ(0, 1);  // 地球的引力作用于苹果
-        
-        // 设置积分器（Euler-Cromer方法，时间步长1ms）
-        systeme.set_integrateur(std::make_shared<IntegrateurEulerCromer>());
-        
-        // 设置输出精度
-        std::cout << std::fixed << std::setprecision(6);
-        
-        // 初始状态
-        std::cout << "=== 初始状态 ===" << std::endl;
-        std::cout << "时间: 0.000000 s" << std::endl;
-        std::cout << "苹果位置: " << pomme->position() << std::endl;
-        std::cout << "苹果速度: " << pomme->vitesse() << std::endl;
-        std::cout << "苹果加速度: " << pomme->evolution(0) << std::endl;
-        std::cout << std::endl;
-        
-        // 模拟参数
-        double dt = 1e-3;  // 时间步长：1ms
-        double temps_total = 2.0;  // 总模拟时间：2秒
-        int pas = 0;
-        
-        // 开始模拟
-        while (systeme.get_temps() < temps_total) {
-            // 演化系统
-            systeme.evolue(dt);
-            
-            // 每100步输出一次状态
-            if (pas % 100 == 0) {
-                std::cout << "=== 时间: " << systeme.get_temps() << " s ===" << std::endl;
-                std::cout << "苹果位置: " << pomme->position() << std::endl;
-                std::cout << "苹果速度: " << pomme->vitesse() << std::endl;
-                std::cout << "苹果加速度: " << pomme->evolution(systeme.get_temps()) << std::endl;
-                std::cout << std::endl;
-            }
-            
-            pas++;
+        // 进行一步积分（除了最后一次）
+        if (i < 100) {
+            integrateur.integre(*pomme, temps, DT);
+            temps += DT;
         }
-        
-        return 0;
-        
-    } catch (const std::exception& e) {
-        std::cerr << "错误: " << e.what() << std::endl;
-        return 1;
     }
-} 
+    
+    std::cout << std::endl;
+    std::cout << std::endl;
+    
+    // 重置模拟
+    temps = 0.0;
+    std::cout << std::setprecision(4);
+    
+    // 重新创建苹果
+    pomme = std::make_shared<PointMateriel>(
+        Vecteur(0.0, RAYON_TERRE + ALTITUDE_INITIALE, 0.0),
+        Vecteur(0.0, 0.0, 0.0),
+        MASSE_POMME,
+        champ_gravite,
+        contrainte_libre
+    );
+    
+    // 第二部分：输出前1.4秒，每0.1秒输出一次
+    const int STEPS_PER_OUTPUT = 100;  // 每100步输出一次（0.1秒）
+    const int TOTAL_OUTPUTS = 15;      // 总共输出15次（0到1.4秒）
+    
+    for (int output = 0; output < TOTAL_OUTPUTS; ++output) {
+        // 计算当前高度
+        Vecteur pos = pomme->position();
+        double altitude = pos.norme() - RAYON_TERRE;
+        
+        // 输出时间和高度
+        std::cout << temps << "  " << std::setprecision(6) << altitude << std::endl;
+        
+        // 进行100步积分（除了最后一次）
+        if (output < TOTAL_OUTPUTS - 1) {
+            for (int step = 0; step < STEPS_PER_OUTPUT; ++step) {
+                integrateur.integre(*pomme, temps, DT);
+                temps += DT;
+            }
+        }
+    }
+    
+    return 0;
+}
